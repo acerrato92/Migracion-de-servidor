@@ -1,0 +1,18 @@
+[
+    {
+      "task_id": 1,
+      "description": "Comprar víveres para la semana",
+      "status": "pendiente"
+    },
+    {
+      "task_id": 2,
+      "description": "Terminar informe del proyecto",
+      "status": "en progreso"
+    },
+    {
+      "task_id": 3,
+      "description": "Hacer ejercicio durante 30 minutos",
+      "status": "pendiente"
+    }
+  ]
+
