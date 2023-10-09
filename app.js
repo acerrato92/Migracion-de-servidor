@@ -4,6 +4,24 @@ const app = express();
 const task = require("./task.json");
 const port = 3001;
 
+const Task = {
+  id: "",
+  isCompleted: false,
+  description: "",
+};
+
+// Crear un arreglo de tareas
+const tasks = [
+  new Task({ id: "123456", isCompleted: false, description: "Walk the dog" }),
+  new Task({ id: "789012", isCompleted: true, description: "Go to the grocery store" }),
+];
+
+// Crear una ruta para listar las tareas
+app.get("/tasks", (req, res) => {
+  // Devolver el arreglo de tareas en formato JSON
+  res.json(tasks);
+});
+
 app.get("/", (req, res) => {
     res.send("primer servidor")
   });
