@@ -9,13 +9,72 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config(); // Cargar variables de entorno
 
-// Array de usuarios predefinidos (esto debería reemplazarse por una base de datos real)
-const users = [
-  { id: 1, username: 'usuario1', password: 'contraseña1' },
-  { id: 2, username: 'usuario2', password: 'contraseña2' },
+app.use(bodyParser.json());
+
+// Lista de tareas (simulada como un arreglo; en una aplicación real, deberías usar una base de datos)
+let tasks = [
+  { id: 1, description: 'Tarea 1', isCompleted: false },
+  { id: 2, description: 'Tarea 2', isCompleted: true },
+  // Agrega más tareas aquí
 ];
 
-app.use(express.json());
+// Endpoint para crear una nueva tarea
+app.post('/tasks', (req, res) => {
+  const newTask = req.body;
+  tasks.push(newTask);
+  res.status(201).json(newTask); // Código 201 (Created) para indicar que se creó una nueva tarea
+});
+
+// Endpoint para listar todas las tareas
+app.get('/tasks', (req, res) => {
+  res.json(tasks);
+});
+
+// Endpoint para obtener una sola tarea por su ID
+app.get('/tasks/:id', (req, res) => {
+  const taskId = parseInt(req.params.id);
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) {
+    return res.status(404).json({ error: 'Tarea no encontrada' }); // Código 404 (Not Found)
+  }
+  res.json(task);
+});
+
+// Endpoint para actualizar una tarea por su ID
+app.put('/tasks/:id', (req, res) => {
+  const taskId = parseInt(req.params.id);
+  const updatedTask = req.body;
+  const taskIndex = tasks.findIndex(t => t.id === taskId);
+  if (taskIndex === -1) {
+    return res.status(404).json({ error: 'Tarea no encontrada' });
+  }
+  tasks[taskIndex] = updatedTask;
+  res.json(updatedTask);
+});
+
+// Endpoint para eliminar una tarea por su ID
+app.delete('/tasks/:id', (req, res) => {
+  const taskId = parseInt(req.params.id);
+  const taskIndex = tasks.findIndex(t => t.id === taskId);
+  if (taskIndex === -1) {
+    return res.status(404).json({ error: 'Tarea no encontrada' });
+  }
+  tasks.splice(taskIndex, 1);
+  res.sendStatus(204); // Código 204 (No Content) para indicar que se eliminó la tarea
+});
+
+// Endpoint para listar tareas completas
+app.get('/tasks/completed', (req, res) => {
+  const completedTasks = tasks.filter(t => t.isCompleted);
+  res.json(completedTasks);
+});
+
+// Endpoint para listar tareas incompletas
+app.get('/tasks/incomplete', (req, res) => {
+  const incompleteTasks = tasks.filter(t => !t.isCompleted);
+  res.json(incompleteTasks);
+});
+
 
 // Ruta de autenticación para generar un token JWT
 app.post('/login', (req, res) => {
