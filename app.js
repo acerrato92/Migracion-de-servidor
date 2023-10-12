@@ -39,3 +39,31 @@ app.use(express.json());
 app.listen(port, () => {
     console.log("server runing on port 3001");
 });
+const express = require('express');
+const app = express();
+
+app.use(express.json()); // Middleware para manejar JSON en solicitudes
+
+// Importa los middleware
+const validateTaskData = require('./list-edit-middleware');
+const validateValidMethods = require('./http-method-middleware');
+const validateListViewParams = require('./list-view-middleware');
+
+// Implementa el middleware de nivel de aplicación para métodos HTTP válidos
+app.use(validateValidMethods);
+
+// Implementa los middleware en las rutas específicas
+app.use('/list-view/:param1/:param2', validateListViewParams);
+
+const listEditRouter = require('./list-edit-router');
+const listViewRouter = require('./list-view-router');
+
+// Implementa los routers en las rutas correspondientes
+app.use('/list-edit', validateTaskData, listEditRouter);
+app.use('/list-view', listViewRouter);
+
+// Resto de la configuración de tu servidor
+
+app.listen(3000, () => {
+  console.log('Servidor Express en ejecución en el puerto 3000');
+});
